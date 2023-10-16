@@ -62,19 +62,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private ADIS16470_IMU gyro = new ADIS16470_IMU();
 
-  private Field2d field = new Field2d();
-
-  private SwerveDriveOdometry odometry = new SwerveDriveOdometry(
-    DriveConstants.kDriveKinematics,
-    getRotation2d(),
-    new SwerveModulePosition[] {
-      new SwerveModulePosition(frontLeftModule.getDrivePosition(), frontLeftModule.getAbsoluteEncoderRotation2d()),
-      new SwerveModulePosition(frontRightModule.getDrivePosition(), frontRightModule.getAbsoluteEncoderRotation2d()),
-      new SwerveModulePosition(backLeftModule.getDrivePosition(), backLeftModule.getAbsoluteEncoderRotation2d()),
-      new SwerveModulePosition(backRightModule.getDrivePosition(), backRightModule.getAbsoluteEncoderRotation2d())
-    }, new Pose2d(0, 0, new Rotation2d())
-  );
-
   /** Creates a new SwerveSubsystem. */
   public SwerveSubsystem() {
     new Thread(() -> { // Wait for gyro to calibrate, then zero it
@@ -85,9 +72,6 @@ public class SwerveSubsystem extends SubsystemBase {
         System.out.println(e);
       }
     }).start();
-
-    field.setRobotPose(0, 0, new Rotation2d());
-    SmartDashboard.putData(field);
   }
 
   public void zeroHeading(){
@@ -103,17 +87,7 @@ public class SwerveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    var gyroAngle = getRotation2d();
     SmartDashboard.putNumber("Robot Heading", getGyroHeading());
-
-    odometry.update(gyroAngle, 
-      new SwerveModulePosition[] {
-        new SwerveModulePosition(frontLeftModule.getDrivePosition(), frontLeftModule.getAbsoluteEncoderRotation2d()),
-        new SwerveModulePosition(frontRightModule.getDrivePosition(), frontRightModule.getAbsoluteEncoderRotation2d()),
-        new SwerveModulePosition(backLeftModule.getDrivePosition(), backLeftModule.getAbsoluteEncoderRotation2d()),
-        new SwerveModulePosition(backRightModule.getDrivePosition(), backRightModule.getAbsoluteEncoderRotation2d())
-      }
-    );
 
   }
 

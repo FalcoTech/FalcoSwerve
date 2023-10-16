@@ -109,6 +109,8 @@ public class SwerveModule extends SubsystemBase {
     turnMotor.set(turnPIDController.calculate(getTurnPosition(), state.angle.getRadians()));
     SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString()); // debug info
     SmartDashboard.putNumber("Swerve[" + absoluteEncoder.getChannel() + "] turn angle", state.angle.getDegrees());
+    SmartDashboard.putNumber("Swerve[" + absoluteEncoder.getChannel() + "] drive motor output", state.speedMetersPerSecond / DriveConstants.kMaxSpeedMetersPerSecond);
+    SmartDashboard.putNumber("Swerve[" + absoluteEncoder.getChannel() + "] turn motor output", turnPIDController.calculate(getTurnPosition(), state.angle.getRadians()));
   }
 
   @Override
