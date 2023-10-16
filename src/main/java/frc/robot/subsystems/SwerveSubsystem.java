@@ -67,27 +67,27 @@ public class SwerveSubsystem extends SubsystemBase {
     new Thread(() -> { // Wait for gyro to calibrate, then zero it
       try {
         Thread.sleep(1000);
-        zeroHeading();
+        zeroGyro();
       } catch (Exception e){
         System.out.println(e);
       }
     }).start();
   }
 
-  public void zeroHeading(){
+  public void zeroGyro(){
     gyro.reset();
   }
-  public double getGyroHeading(){
+  public double getGyroAngleDegrees(){
     return Math.IEEEremainder(gyro.getAngle(), 360);
   }
-  public Rotation2d getRotation2d(){
-    return Rotation2d.fromDegrees(getGyroHeading());
+  public Rotation2d getGyroRotation2d(){
+    return Rotation2d.fromDegrees(getGyroAngleDegrees());
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Robot Heading", getGyroHeading());
+    SmartDashboard.putNumber("Robot Heading", getGyroAngleDegrees());
 
   }
 
