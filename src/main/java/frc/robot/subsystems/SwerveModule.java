@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -11,6 +13,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -32,6 +35,8 @@ public class SwerveModule extends SubsystemBase {
   private final AnalogInput absoluteEncoder;
   private final boolean absoluteEncoderReversed;
   private final double absoluteEncoderOffsetRadians;
+
+  public static double simDriveDist = 0.0;
 
   /** Creates a new SwerveModule. */
   public SwerveModule(int driveMotorID, int turnMotorID, boolean driveMotorReversed, boolean turnMotorReversed, int absoluteEncoderID, double absoluteEncoderOffset, boolean absoluteEncoderReversed) {
@@ -60,7 +65,7 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public double getDrivePosition(){ // Relative Drive Encoder "Distance" (Meters)
-    return driveEncoder.getPosition(); 
+    return driveEncoder.getPosition() + simDriveDist; 
   }
   public double getTurnPosition(){ //Relative Turn Encoder "Rotation" (Radians)
     return turnEncoder.getPosition();
@@ -90,32 +95,31 @@ public class SwerveModule extends SubsystemBase {
     turnEncoder.setPosition(getAbsoluteEncoderRadians());
   }
 
-  public SwerveModuleState getState(){
-    return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurnPosition()));
+  public SwerveModuleState getModuleState(){
+    return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getAbsoluteEncoderRadians()));
+  }
+  public SwerveModulePosition getModulePosition(){
+    return new SwerveModulePosition(getDrivePosition(), getAbsoluteEncoderRotation2d()); //getAbsoluteEncoderRotation2d() returns a Rotation2d object
   }
 
-  public void stop(){
+  public void stopMotors(){
     driveMotor.set(0);
     turnMotor.set(0);
   }
-  public void setDesiredState(SwerveModuleState state){
-    if (Math.abs(state.speedMetersPerSecond) < 0.001){
-      stop();
+  public void setDesiredState(SwerveModuleState state){ // Set desired state of the module takes a module state object calculated in the command with the given driver parameters (speed, angle)
+    if (Math.abs(state.speedMetersPerSecond) < 0.001){ // If speed is less than 0.001 m/s, stop motors, and no need to apply power to motors, so return (stop and get out of the function)
+      stopMotors();
       return;
     }
 
-    state = SwerveModuleState.optimize(state, getState().angle);
-    driveMotor.set(state.speedMetersPerSecond / DriveConstants.kMaxSpeedMetersPerSecond);
-    turnMotor.set(turnPIDController.calculate(getTurnPosition(), state.angle.getRadians()));
+    state = SwerveModuleState.optimize(state, getModuleState().angle); // Optimize the state to get the shortest path to the desired angle
+    driveMotor.set(state.speedMetersPerSecond / DriveConstants.kMaxSpeedMetersPerSecond); // Set drive motor to the desired speed
+    turnMotor.set(turnPIDController.calculate(getTurnPosition(), state.angle.getRadians())); // Set turn motor to the desired angle
     SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString()); // debug info
-    SmartDashboard.putNumber("Swerve[" + absoluteEncoder.getChannel() + "] turn angle", state.angle.getDegrees());
-    SmartDashboard.putNumber("Swerve[" + absoluteEncoder.getChannel() + "] drive motor output", state.speedMetersPerSecond / DriveConstants.kMaxSpeedMetersPerSecond);
-    SmartDashboard.putNumber("Swerve[" + absoluteEncoder.getChannel() + "] turn motor output", turnPIDController.calculate(getTurnPosition(), state.angle.getRadians()));
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
   }
 }

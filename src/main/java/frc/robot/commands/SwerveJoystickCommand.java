@@ -46,32 +46,30 @@ public class SwerveJoystickCommand extends CommandBase {
   @Override
   public void execute() {
     //get joystick values
-    double xSpeed = xSpdFunction.get();
-    double ySpeed = ySpdFunction.get();
-    double rotSpeed = rotSpdFunction.get();
+    double xSpeed = xSpdFunction.get(); //get X speed from function
+    double ySpeed = ySpdFunction.get(); //get Y speed from function
+    double rotSpeed = rotSpdFunction.get(); //get rotation speed from function
     
     //apply deadband
-    xSpeed = Math.abs(xSpeed) > OperatorConstants.kDeadband ? xSpeed : 0.0;
-    ySpeed = Math.abs(ySpeed) > OperatorConstants.kDeadband ? ySpeed : 0.0;
-    rotSpeed = Math.abs(rotSpeed) > OperatorConstants.kDeadband ? rotSpeed : 0.0;
+    xSpeed = Math.abs(xSpeed) > OperatorConstants.kDeadband ? xSpeed : 0.0; // <
+    ySpeed = Math.abs(ySpeed) > OperatorConstants.kDeadband ? ySpeed : 0.0; //if requested speed is less than a certain value, set to 0 to prevent drift and ensure the movement was intentional
+    rotSpeed = Math.abs(rotSpeed) > OperatorConstants.kDeadband ? rotSpeed : 0.0; // <
 
     //apply limiter
-    xSpeed = xLimiter.calculate(xSpeed) * (DriveConstants.kMaxSpeedMetersPerSecond / 2);
-    ySpeed = yLimiter.calculate(ySpeed) * (DriveConstants.kMaxSpeedMetersPerSecond / 2);
+    xSpeed = xLimiter.calculate(xSpeed) * (DriveConstants.kMaxSpeedMetersPerSecond / 2); // will removing /2 make it work properly?
+    ySpeed = yLimiter.calculate(ySpeed) * (DriveConstants.kMaxSpeedMetersPerSecond / 2); //limit speed to max speed
     rotSpeed = rotLimiter.calculate(rotSpeed) * DriveConstants.kMaxAngularSpeedRadiansPerSecond / 2;
 
-    //construct chassis speed
-    ChassisSpeeds chassisSpeeds;
-    if (fieldRelativeFunction.get()){
-       //if field relative mode (default)
+    ChassisSpeeds chassisSpeeds; //construct chassis speed
+    if (fieldRelativeFunction.get()){ //if field relative mode (default)
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
             xSpeed, ySpeed, rotSpeed, swerveSubsystem.getGyroRotation2d());
     } else {
       chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, rotSpeed);
     }
 
-    //convert chassis speed to module states
-    SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+    //creates a list of swervemodule states to apply to the modules
+    SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); //inverse kinematics that we don't have to worry about. Thanks WPIlib!
 
     //output module states to wheels
     swerveSubsystem.setModuleStates(moduleStates);

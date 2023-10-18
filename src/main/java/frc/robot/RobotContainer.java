@@ -5,9 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
 import frc.robot.commands.SwerveJoystickCommand;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,7 +30,7 @@ public class RobotContainer {
   public RobotContainer() {
     m_swerveSubsystem.setDefaultCommand(new SwerveJoystickCommand(
       m_swerveSubsystem, 
-      () -> -Pilot.getLeftY(), 
+      () -> -Pilot.getLeftY(),
       () -> Pilot.getLeftX(),
       () -> Pilot.getRightX(),
       () -> !Pilot.getR1Button()));
