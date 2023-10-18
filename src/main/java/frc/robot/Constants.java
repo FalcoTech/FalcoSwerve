@@ -35,11 +35,18 @@ public final class Constants {
     public static final double kTrackWidth = Units.inchesToMeters(23.5); //change
     //distance between centers of front and back wheels on robot (wheel base)
     public static final double kWheelBase = Units.inchesToMeters(23.5); //change
+    // public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+    //   new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+    //   new Translation2d(kWheelBase / 2, kTrackWidth / 2),
+    //   new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
+    //   new Translation2d(-kWheelBase / 2, kTrackWidth / 2));
+    
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-      new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-      new Translation2d(kWheelBase / 2, kTrackWidth / 2),
-      new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
-      new Translation2d(-kWheelBase / 2, kTrackWidth / 2));
+      new Translation2d(-kTrackWidth/2, kWheelBase/2),
+      new Translation2d(kTrackWidth/2, kWheelBase/2),
+      new Translation2d(-kTrackWidth/2, -kWheelBase/2),
+      new Translation2d(kTrackWidth/2, -kWheelBase/2));
+
 
     public static final int kFrontLeftDriveMotorID = 0;
     public static final int kFrontLeftTurnMotorID = 1;

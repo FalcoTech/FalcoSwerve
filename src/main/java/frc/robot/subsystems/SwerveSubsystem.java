@@ -62,6 +62,14 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private ADIS16470_IMU gyro = new ADIS16470_IMU();
 
+  private Field2d field = new Field2d();
+  private SwerveDriveOdometry odometry = new SwerveDriveOdometry(
+    DriveConstants.kDriveKinematics,
+    getGyroRotation2d(),
+    new SwerveModulePosition[] {frontLeftModule.getSwerveModulePosition(), frontRightModule.getSwerveModulePosition(), backLeftModule.getSwerveModulePosition(), backRightModule.getSwerveModulePosition()},
+    new Pose2d(0, 0, new Rotation2d(0))
+  );
+
   /** Creates a new SwerveSubsystem. */
   public SwerveSubsystem() {
     new Thread(() -> { // Wait for gyro to calibrate, then zero it
@@ -72,6 +80,9 @@ public class SwerveSubsystem extends SubsystemBase {
         System.out.println(e);
       }
     }).start();
+
+    SmartDashboard.putData("Field", field);
+    field.setRobotPose(odometry.getPoseMeters());
   }
 
   public void zeroGyro(){
@@ -89,13 +100,15 @@ public class SwerveSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Robot Heading", getGyroAngleDegrees());
 
+    odometry.update(getGyroRotation2d(), new SwerveModulePosition[]{frontLeftModule.getSwerveModulePosition(), frontRightModule.getSwerveModulePosition(), backLeftModule.getSwerveModulePosition(), backRightModule.getSwerveModulePosition()});
+    field.setRobotPose(odometry.getPoseMeters());
   }
 
   public void stopModules(){
-    frontLeftModule.stop();
-    frontRightModule.stop();
-    backLeftModule.stop();
-    backRightModule.stop();
+    frontLeftModule.stopModuleMotors();
+    frontRightModule.stopModuleMotors();
+    backLeftModule.stopModuleMotors();
+    backRightModule.stopModuleMotors();
   }
 
   public void setModuleStates(SwerveModuleState[] desiredStates){
