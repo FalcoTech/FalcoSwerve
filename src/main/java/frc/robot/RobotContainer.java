@@ -30,8 +30,8 @@ public class RobotContainer {
   public RobotContainer() {
     m_swerveSubsystem.setDefaultCommand(new SwerveJoystickCommand(
       m_swerveSubsystem, 
-      () -> 1.00, 
-      () -> -1.00,
+      () -> -Pilot.getLeftY(), 
+      () -> -Pilot.getLeftX(),
       () -> Pilot.getRightX(),
       () -> !Pilot.getR1Button()));
 

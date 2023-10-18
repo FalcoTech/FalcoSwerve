@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.opencv.core.Mat;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -32,7 +34,7 @@ public class SwerveModule extends SubsystemBase {
 
   private final AnalogInput absoluteEncoder;
   private final boolean absoluteEncoderReversed;
-  private final double absoluteEncoderOffsetRadians;
+  private static double absoluteEncoderOffsetRadians;
 
   /** Creates a new SwerveModule. */
   public SwerveModule(int driveMotorID, int turnMotorID, boolean driveMotorReversed, boolean turnMotorReversed, int absoluteEncoderID, double absoluteEncoderOffset, boolean absoluteEncoderReversed) {
@@ -107,13 +109,12 @@ public class SwerveModule extends SubsystemBase {
 
     state = SwerveModuleState.optimize(state, getState().angle); // Optimize state to be closest to current state
     driveMotor.set(state.speedMetersPerSecond / DriveConstants.kMaxSpeedMetersPerSecond); // Set drive motor to desired speed
-    driveEncoder.setPosition(getDrivePosition() + (state.speedMetersPerSecond > 0.0 ? .01 : -.01));
+    driveEncoder.setPosition(getDrivePosition() + (state.speedMetersPerSecond > 0.0 ? .025 : -.025));
     
     turnMotor.set(turnPIDController.calculate(getTurnPosition(), state.angle.getRadians())); // Set turn motor to desired angle
-    turnEncoder.setPosition(getTurnPosition() + getAbsoluteEncoderRadians());
-    SmartDashboard.putNumber("Swerve[" + absoluteEncoder.getChannel() + "] turn motor pos", getTurnPosition());
-    //problem: the absolute encoder needs to turn and be read, not the turnencoder
-    //solution: get absolute encoder value and hack it to the turn encoder position?
+    absoluteEncoderOffsetRadians = -state.angle.getRadians();
+
+
     SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString()); // debug info
   }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

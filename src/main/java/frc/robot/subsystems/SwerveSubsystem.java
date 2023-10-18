@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.SwerveJoystickCommand;
 
 public class SwerveSubsystem extends SubsystemBase {
   private final SwerveModule frontLeftModule = new SwerveModule(
@@ -65,7 +66,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private Field2d field = new Field2d();
   private SwerveDriveOdometry odometry = new SwerveDriveOdometry(
     DriveConstants.kDriveKinematics,
-    getGyroRotation2d(),
+    getGyroRotation2d(0),
     new SwerveModulePosition[] {frontLeftModule.getSwerveModulePosition(), frontRightModule.getSwerveModulePosition(), backLeftModule.getSwerveModulePosition(), backRightModule.getSwerveModulePosition()},
     new Pose2d(0, 0, new Rotation2d(0))
   );
@@ -88,19 +89,19 @@ public class SwerveSubsystem extends SubsystemBase {
   public void zeroGyro(){
     gyro.reset();
   }
-  public double getGyroAngleDegrees(){
-    return Math.IEEEremainder(gyro.getAngle(), 360);
+  public double getGyroAngleDegrees(double simRotation){
+    return Math.IEEEremainder(gyro.getAngle() - simRotation, 360);
   }
-  public Rotation2d getGyroRotation2d(){
-    return Rotation2d.fromDegrees(getGyroAngleDegrees());
+  public Rotation2d getGyroRotation2d(double simRotation){
+    return Rotation2d.fromDegrees(getGyroAngleDegrees(simRotation));
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Robot Heading", getGyroAngleDegrees());
+    SmartDashboard.putNumber("Robot Heading", getGyroAngleDegrees(SwerveJoystickCommand.rotSim));
 
-    odometry.update(getGyroRotation2d(), new SwerveModulePosition[]{frontLeftModule.getSwerveModulePosition(), frontRightModule.getSwerveModulePosition(), backLeftModule.getSwerveModulePosition(), backRightModule.getSwerveModulePosition()});
+    odometry.update(getGyroRotation2d(SwerveJoystickCommand.rotSim), new SwerveModulePosition[]{frontLeftModule.getSwerveModulePosition(), frontRightModule.getSwerveModulePosition(), backLeftModule.getSwerveModulePosition(), backRightModule.getSwerveModulePosition()});
     field.setRobotPose(odometry.getPoseMeters());
   }
 

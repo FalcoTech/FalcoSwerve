@@ -20,6 +20,8 @@ public class SwerveJoystickCommand extends CommandBase {
   private final Supplier<Boolean> fieldRelativeFunction;
   private final SlewRateLimiter xLimiter, yLimiter, rotLimiter;
 
+  public static double rotSim = 0;
+
   /** Creates a new SwerveJoystickCommand. */
   public SwerveJoystickCommand(SwerveSubsystem swerveSubsystem, 
             Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction, Supplier<Double> rotSpdFunction, 
@@ -59,13 +61,19 @@ public class SwerveJoystickCommand extends CommandBase {
     xSpeed = xLimiter.calculate(xSpeed) * (DriveConstants.kMaxSpeedMetersPerSecond / 2);
     ySpeed = yLimiter.calculate(ySpeed) * (DriveConstants.kMaxSpeedMetersPerSecond / 2);
     rotSpeed = rotLimiter.calculate(rotSpeed) * DriveConstants.kMaxAngularSpeedRadiansPerSecond / 2;
+    
+    if (rotSpeed > 0){
+      rotSim += 1;
+    } else if (rotSpeed < 0){
+      rotSim -= 1;
+    }
 
     //construct chassis speed
     ChassisSpeeds chassisSpeeds;
     if (fieldRelativeFunction.get()){
        //if field relative mode (default)
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-            xSpeed, ySpeed, rotSpeed, swerveSubsystem.getGyroRotation2d());
+            xSpeed, ySpeed, rotSpeed, swerveSubsystem.getGyroRotation2d(rotSim));
     } else {
       chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, rotSpeed);
     }
