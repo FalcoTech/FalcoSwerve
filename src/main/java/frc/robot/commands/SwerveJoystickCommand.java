@@ -56,8 +56,8 @@ public class SwerveJoystickCommand extends CommandBase {
     rotSpeed = Math.abs(rotSpeed) > OperatorConstants.kDeadband ? rotSpeed : 0.0; // <
 
     //apply limiter
-    xSpeed = xLimiter.calculate(xSpeed) * (DriveConstants.kMaxSpeedMetersPerSecond / 2); // will removing /2 make it work properly?
-    ySpeed = yLimiter.calculate(ySpeed) * (DriveConstants.kMaxSpeedMetersPerSecond / 2); //limit speed to max speed
+    xSpeed = xLimiter.calculate(xSpeed) * (DriveConstants.kMaxSpeedMetersPerSecond); // sim says 8ft/s is max speed now, so remove this?
+    ySpeed = yLimiter.calculate(ySpeed) * (DriveConstants.kMaxSpeedMetersPerSecond); //limit speed to max speed? idk lol
     rotSpeed = rotLimiter.calculate(rotSpeed) * DriveConstants.kMaxAngularSpeedRadiansPerSecond / 2;
 
     ChassisSpeeds chassisSpeeds; //construct chassis speed
