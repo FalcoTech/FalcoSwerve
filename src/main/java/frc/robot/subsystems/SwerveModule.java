@@ -77,7 +77,7 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public double getAbsoluteEncoderRadians(){
-    double angle = absoluteEncoder.getVoltage() / RobotController.getVoltage5V(); // Voltage read / Voltage supplied (5V) = % of full rotation
+    double angle = 0; // Voltage read / Voltage supplied (5V) = % of full rotation
     angle *= 2.0 * Math.PI; // Convert to radians
     angle -= absoluteEncoderOffsetRadians; // Subtract offset for "actual" angle
     return angle * (absoluteEncoderReversed ? -1.0 : 1.0); // multiply by -1 if reversed
@@ -112,8 +112,7 @@ public class SwerveModule extends SubsystemBase {
     driveEncoder.setPosition(getDrivePosition() + (state.speedMetersPerSecond > 0.0 ? .025 : -.025));
     
     turnMotor.set(turnPIDController.calculate(getTurnPosition(), state.angle.getRadians())); // Set turn motor to desired angle
-    absoluteEncoderOffsetRadians = -state.angle.getRadians();
-
+    absoluteEncoderOffsetRadians = -state.angle.getRadians(); // Set absolute encoder offset to be the difference between the desired angle and the current angle
 
     SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString()); // debug info
   }
