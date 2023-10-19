@@ -30,9 +30,9 @@ public class RobotContainer {
   public RobotContainer() {
     m_swerveSubsystem.setDefaultCommand(new SwerveJoystickCommand(
       m_swerveSubsystem, 
-      () -> SmartDashboard.getNumber("LeftY", 0), 
-      () -> SmartDashboard.getNumber("LeftX", 0),
-      () -> SmartDashboard.getNumber("RightX", 0),
+      () -> -Pilot.getLeftY(), 
+      () -> -Pilot.getLeftX(),
+      () -> Pilot.getRightX(),
       () -> !Pilot.getR1Button()));
 
     // Configure the trigger bindings

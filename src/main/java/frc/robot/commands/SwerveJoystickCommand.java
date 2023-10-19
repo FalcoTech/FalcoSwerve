@@ -63,9 +63,9 @@ public class SwerveJoystickCommand extends CommandBase {
     rotSpeed = rotLimiter.calculate(rotSpeed) * DriveConstants.kMaxAngularSpeedRadiansPerSecond / 2;
     
     if (rotSpeed > 0){
-      rotSim += 2;
+      rotSim += rotSpeed;
     } else if (rotSpeed < 0){
-      rotSim -= 2;
+      rotSim -= rotSpeed;
     }
 
     //construct chassis speed
