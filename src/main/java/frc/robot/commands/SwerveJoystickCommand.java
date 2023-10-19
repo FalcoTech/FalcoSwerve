@@ -51,14 +51,14 @@ public class SwerveJoystickCommand extends CommandBase {
     double rotSpeed = rotSpdFunction.get(); //get rotation speed from function
     
     //apply deadband
-    xSpeed = Math.abs(xSpeed) > OperatorConstants.kDeadband ? xSpeed : 0.0; // <
-    ySpeed = Math.abs(ySpeed) > OperatorConstants.kDeadband ? ySpeed : 0.0; //if requested speed is less than a certain value, set to 0 to prevent drift and ensure the movement was intentional
-    rotSpeed = Math.abs(rotSpeed) > OperatorConstants.kDeadband ? rotSpeed : 0.0; // <
+    xSpeed = Math.abs(xSpeed) > OperatorConstants.kPilotDeadband ? xSpeed : 0.0; // <
+    ySpeed = Math.abs(ySpeed) > OperatorConstants.kPilotDeadband ? ySpeed : 0.0; //if requested speed is less than a certain value, set to 0 to prevent drift and ensure the movement was intentional
+    rotSpeed = Math.abs(rotSpeed) > OperatorConstants.kPilotDeadband ? rotSpeed : 0.0; // <
 
     //apply limiter
-    xSpeed = xLimiter.calculate(xSpeed) * (DriveConstants.kMaxSpeedMetersPerSecond); // sim says 8ft/s is max speed now, so remove this?
+    xSpeed = xLimiter.calculate(xSpeed) * (DriveConstants.kMaxSpeedMetersPerSecond); // sim says 8ft/s is max speed now, so remove / 2 ?
     ySpeed = yLimiter.calculate(ySpeed) * (DriveConstants.kMaxSpeedMetersPerSecond); //limit speed to max speed? idk lol
-    rotSpeed = rotLimiter.calculate(rotSpeed) * DriveConstants.kMaxAngularSpeedRadiansPerSecond / 2;
+    rotSpeed = rotLimiter.calculate(rotSpeed) * DriveConstants.kMaxAngularSpeedRadiansPerSecond / 2; //same with this
 
     ChassisSpeeds chassisSpeeds; //construct chassis speed
     if (fieldRelativeFunction.get()){ //if field relative mode (default)

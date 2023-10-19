@@ -36,8 +36,6 @@ public class SwerveModule extends SubsystemBase {
   private final boolean absoluteEncoderReversed;
   private final double absoluteEncoderOffsetRadians;
 
-  public static double simDriveDist = 0.0;
-
   /** Creates a new SwerveModule. */
   public SwerveModule(int driveMotorID, int turnMotorID, boolean driveMotorReversed, boolean turnMotorReversed, int absoluteEncoderID, double absoluteEncoderOffset, boolean absoluteEncoderReversed) {
     this.absoluteEncoderOffsetRadians = absoluteEncoderOffset; //Encoder offset in radians
@@ -65,7 +63,7 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public double getDrivePosition(){ // Relative Drive Encoder "Distance" (Meters)
-    return driveEncoder.getPosition() + simDriveDist; 
+    return driveEncoder.getPosition(); 
   }
   public double getTurnPosition(){ //Relative Turn Encoder "Rotation" (Radians)
     return turnEncoder.getPosition();
@@ -115,7 +113,7 @@ public class SwerveModule extends SubsystemBase {
     state = SwerveModuleState.optimize(state, getModuleState().angle); // Optimize the state to get the shortest path to the desired angle
     driveMotor.set(state.speedMetersPerSecond / DriveConstants.kMaxSpeedMetersPerSecond); // Set drive motor to the desired speed
     turnMotor.set(turnPIDController.calculate(getTurnPosition(), state.angle.getRadians())); // Set turn motor to the desired angle
-    SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString()); // debug info
+    SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString()); // print debug info to smartdashboard
   }
 
   @Override

@@ -21,7 +21,7 @@ public final class Constants {
     public static int kPilotPort = 0;
     public static int kCoPilotPort = 1;
 
-    public static double kDeadband = 0.1; //https://i.ytimg.com/vi/NdGzov5OU_Y/maxresdefault.jpg 
+    public static double kPilotDeadband = 0.1; //https://i.ytimg.com/vi/NdGzov5OU_Y/maxresdefault.jpg 
   }
 
   public static class DriveConstants {
@@ -33,13 +33,16 @@ public final class Constants {
 
     //distance between centers of right and left wheels on robot (track width)
     public static final double kTrackWidth = Units.inchesToMeters(23.5); //change
+
+    //https://upload.wikimedia.org/wikipedia/commons/5/52/Wheelbase_and_Track.png
+    
     //distance between centers of front and back wheels on robot (wheel base)
     public static final double kWheelBase = Units.inchesToMeters(23.5); //change
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-      new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-      new Translation2d(kWheelBase / 2, kTrackWidth / 2),
-      new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
-      new Translation2d(-kWheelBase / 2, kTrackWidth / 2));
+      new Translation2d(-kTrackWidth / 2, kWheelBase / 2), //Front left from center
+      new Translation2d(kTrackWidth / 2, kWheelBase / 2), //Front right from center
+      new Translation2d(-kTrackWidth / 2, -kWheelBase / 2), //Back left from center
+      new Translation2d(kTrackWidth / 2, -kWheelBase / 2)); //Back right from center
   }
 
   public static class ModuleConstants {
