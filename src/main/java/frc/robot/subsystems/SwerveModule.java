@@ -6,7 +6,12 @@ package frc.robot.subsystems;
 
 import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 
+import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import com.ctre.phoenix.sensors.SensorTimeBase;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -32,7 +37,10 @@ public class SwerveModule extends SubsystemBase {
 
   private final PIDController turnPIDController;
 
-  private final AnalogInput absoluteEncoder;
+  // private final AnalogInput absoluteEncoder;
+  private final CANCoder absoluteEncoder;
+  private CANCoderConfiguration AEconfig;
+
   private final boolean absoluteEncoderReversed;
   private final double absoluteEncoderOffsetRadians;
 
@@ -40,7 +48,16 @@ public class SwerveModule extends SubsystemBase {
   public SwerveModule(int driveMotorID, int turnMotorID, boolean driveMotorReversed, boolean turnMotorReversed, int absoluteEncoderID, double absoluteEncoderOffset, boolean absoluteEncoderReversed) {
     this.absoluteEncoderOffsetRadians = absoluteEncoderOffset; //Encoder offset in radians
     this.absoluteEncoderReversed = absoluteEncoderReversed; // Encoder reversed or not
-    absoluteEncoder = new AnalogInput(absoluteEncoderID); // Absolute encoder object 
+    
+    absoluteEncoder = new CANCoder(absoluteEncoderID); // Absolute encoder object
+    AEconfig = new CANCoderConfiguration();
+    AEconfig.sensorCoefficient = 2 * Math.PI / 4096.0; //set absolute encoder to return radians instead of rotations/ticks or degrees
+    AEconfig.unitString = "rad"; //set absolute encoder unit to radians
+    AEconfig.sensorTimeBase = SensorTimeBase.PerSecond; //set absolute encoder to return radians per second instead of rotations/ticks per something (idk what default is lol)
+    //cancoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10)
+    absoluteEncoder.configAllSettings(AEconfig); //apply settings to absolute encoder
+
+
 
     driveMotor = new CANSparkMax(driveMotorID, MotorType.kBrushless); // Drive motor object
     turnMotor = new CANSparkMax(turnMotorID, MotorType.kBrushless); // Turn motor object
@@ -77,8 +94,8 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public double getAbsoluteEncoderRadians(){
-    double angle = absoluteEncoder.getVoltage() / RobotController.getVoltage5V(); // Voltage read / Voltage supplied (5V) = % of full rotation
-    angle *= 2.0 * Math.PI; // Convert to radians
+    double angle = absoluteEncoder.getAbsolutePosition(); // Get absolute encoder angle
+    // angle *= 2.0 * Math.PI; // Convert to radians
     angle -= absoluteEncoderOffsetRadians; // Subtract offset for "actual" angle
     return angle * (absoluteEncoderReversed ? -1.0 : 1.0); // multiply by -1 if reversed
     //            (expression) ? (value if true) : (value if false)
@@ -112,12 +129,12 @@ public class SwerveModule extends SubsystemBase {
 
     state = SwerveModuleState.optimize(state, getModuleState().angle); // Optimize the state to get the shortest path to the desired angle
     driveMotor.set(state.speedMetersPerSecond / DriveConstants.kMaxSpeedMetersPerSecond); // Set drive motor to the desired speed
-    SmartDashboard.putNumber("Swerve[" + absoluteEncoder.getChannel() + "] drive motor output", state.speedMetersPerSecond / DriveConstants.kMaxSpeedMetersPerSecond);
+    SmartDashboard.putNumber("Swerve[" + absoluteEncoder.getDeviceID() + "] drive motor output", state.speedMetersPerSecond / DriveConstants.kMaxSpeedMetersPerSecond);
     
     turnMotor.set(turnPIDController.calculate(getTurnPosition(), state.angle.getRadians())); // Set turn motor to the desired angle
-    SmartDashboard.putNumber("Swerve[" + absoluteEncoder.getChannel() + "] turn motor output", turnPIDController.calculate(getTurnPosition(), state.angle.getRadians()));
+    SmartDashboard.putNumber("Swerve[" + absoluteEncoder.getDeviceID() + "] turn motor output", turnPIDController.calculate(getTurnPosition(), state.angle.getRadians()));
     
-    SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString()); // print debug info to smartdashboard
+    SmartDashboard.putString("Swerve[" + absoluteEncoder.getDeviceID() + "] state", state.toString()); // print debug info to smartdashboard
   }
 
   @Override
