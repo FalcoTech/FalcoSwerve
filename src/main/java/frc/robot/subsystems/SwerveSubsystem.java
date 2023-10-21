@@ -27,36 +27,36 @@ public class SwerveSubsystem extends SubsystemBase {
     DriveBaseConstants.kFrontLeftTurnMotorID,
     DriveBaseConstants.kFrontLeftDriveEncoderReversed,
     DriveBaseConstants.kFrontLeftTurnEncoderReversed,
-    DriveBaseConstants.kFrontLeftDriveAbsoluteEncoderID,
-    DriveBaseConstants.kFrontLeftDriveAbsoluteEncoderOffsetRadians,
-    DriveBaseConstants.kFrontLeftDriveAbsoluteEncoderReversed
+    DriveBaseConstants.kFrontLeftAbsoluteEncoderID,
+    DriveBaseConstants.kFrontLeftAbsoluteEncoderOffsetRadians,
+    DriveBaseConstants.kFrontLeftAbsoluteEncoderReversed
   );
   private final SwerveModule frontRightModule = new SwerveModule(
     DriveBaseConstants.kFrontRightDriveMotorID,
     DriveBaseConstants.kFrontRightTurnMotorID,
     DriveBaseConstants.kFrontRightDriveEncoderReversed,
     DriveBaseConstants.kFrontRightTurnEncoderReversed,
-    DriveBaseConstants.kFrontRightDriveAbsoluteEncoderID,
-    DriveBaseConstants.kFrontRightDriveAbsoluteEncoderOffsetRadians,
-    DriveBaseConstants.kFrontRightDriveAbsoluteEncoderReversed
+    DriveBaseConstants.kFrontRightAbsoluteEncoderID,
+    DriveBaseConstants.kFrontRightAbsoluteEncoderOffsetRadians,
+    DriveBaseConstants.kFrontRightAbsoluteEncoderReversed
   );
   private final SwerveModule backLeftModule = new SwerveModule(
     DriveBaseConstants.kBackLeftDriveMotorID,
     DriveBaseConstants.kBackLeftTurnMotorID,
     DriveBaseConstants.kBackLeftDriveEncoderReversed,
     DriveBaseConstants.kBackLeftTurnEncoderReversed,
-    DriveBaseConstants.kBackLeftDriveAbsoluteEncoderID,
-    DriveBaseConstants.kBackLeftDriveAbsoluteEncoderOffsetRadians,
-    DriveBaseConstants.kBackLeftDriveAbsoluteEncoderReversed
+    DriveBaseConstants.kBackLeftAbsoluteEncoderID,
+    DriveBaseConstants.kBackLeftAbsoluteEncoderOffsetRadians,
+    DriveBaseConstants.kBackLeftAbsoluteEncoderReversed
   );
   private final SwerveModule backRightModule = new SwerveModule(
     DriveBaseConstants.kBackRightDriveMotorID,
     DriveBaseConstants.kBackRightTurnMotorID,
     DriveBaseConstants.kBackRightDriveEncoderReversed,
     DriveBaseConstants.kBackRightTurnEncoderReversed,
-    DriveBaseConstants.kBackRightDriveAbsoluteEncoderID,
-    DriveBaseConstants.kBackRightDriveAbsoluteEncoderOffsetRadians,
-    DriveBaseConstants.kBackRightDriveAbsoluteEncoderReversed
+    DriveBaseConstants.kBackRightAbsoluteEncoderID,
+    DriveBaseConstants.kBackRightAbsoluteEncoderOffsetRadians,
+    DriveBaseConstants.kBackRightAbsoluteEncoderReversed
   );
 
   private ADIS16470_IMU gyro = new ADIS16470_IMU(); //gyro on the RoboRIO

@@ -6,10 +6,10 @@ package frc.robot.subsystems;
 
 import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import com.ctre.phoenix.sensors.SensorTimeBase;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
@@ -51,13 +51,15 @@ public class SwerveModule extends SubsystemBase {
     
     absoluteEncoder = new CANCoder(absoluteEncoderID); // Absolute encoder object
     AEconfig = new CANCoderConfiguration();
-    AEconfig.sensorCoefficient = 2 * Math.PI / 4096.0; //set absolute encoder to return radians instead of rotations/ticks or degrees
+
+    AEconfig.sensorCoefficient = 2 * Math.PI / 4096.0; //coefficent for converting encoder ticks to radians (divide by 4096 for % of full rotation, *2pi to convert to radians)
     AEconfig.unitString = "rad"; //set absolute encoder unit to radians
+    AEconfig.sensorDirection = absoluteEncoderReversed; //set absolute encoder to be reversed or not
+    AEconfig.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180; //set absolute encoder to return values from -180 to 180 degrees
+
     AEconfig.sensorTimeBase = SensorTimeBase.PerSecond; //set absolute encoder to return radians per second instead of rotations/ticks per something (idk what default is lol)
-    //cancoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10)
+    
     absoluteEncoder.configAllSettings(AEconfig); //apply settings to absolute encoder
-
-
 
     driveMotor = new CANSparkMax(driveMotorID, MotorType.kBrushless); // Drive motor object
     turnMotor = new CANSparkMax(turnMotorID, MotorType.kBrushless); // Turn motor object
@@ -95,10 +97,7 @@ public class SwerveModule extends SubsystemBase {
 
   public double getAbsoluteEncoderRadians(){
     double angle = absoluteEncoder.getAbsolutePosition(); // Get absolute encoder angle
-    // angle *= 2.0 * Math.PI; // Convert to radians
-    angle -= absoluteEncoderOffsetRadians; // Subtract offset for "actual" angle
-    return angle * (absoluteEncoderReversed ? -1.0 : 1.0); // multiply by -1 if reversed
-    //            (expression) ? (value if true) : (value if false)
+    return angle - absoluteEncoderOffsetRadians; // Subtract offset for "actual" angle
   }
   public Rotation2d getAbsoluteEncoderRotation2d(){
     new Rotation2d();
