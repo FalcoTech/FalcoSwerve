@@ -56,39 +56,41 @@ public final class Constants {
     public static final double kTurnEncoderRPM2RadianPerSec = kTurnEncoderRot2Radian / 60.0;
 
     public static final double kPTurning = 0.5;
+    public static final double kITurning = 0.0;
+    public static final double kDTurning = 0.0;
   }
 
   public static class DriveBaseConstants {
-    public static final int kFrontLeftDriveMotorID = 0;
-    public static final int kFrontLeftTurnMotorID = 1;
+    public static final int kFrontLeftDriveMotorID = 10;
+    public static final int kFrontLeftTurnMotorID = 11;
     public static final boolean kFrontLeftDriveEncoderReversed = false;
     public static final boolean kFrontLeftTurnEncoderReversed = false;
     public static final int kFrontLeftAbsoluteEncoderID = 0;
-    public static final double kFrontLeftAbsoluteEncoderOffsetRadians = 0;
+    public static final double kFrontLeftAbsoluteEncoderOffsetRadians = Math.toRadians(0);
     public static final boolean kFrontLeftAbsoluteEncoderReversed = false;
 
-    public static final int kFrontRightDriveMotorID = 2;
-    public static final int kFrontRightTurnMotorID = 3;
+    public static final int kFrontRightDriveMotorID = 12;
+    public static final int kFrontRightTurnMotorID = 13;
     public static final boolean kFrontRightDriveEncoderReversed = false;
     public static final boolean kFrontRightTurnEncoderReversed = false;
     public static final int kFrontRightAbsoluteEncoderID = 1;
-    public static final double kFrontRightAbsoluteEncoderOffsetRadians = 0;
+    public static final double kFrontRightAbsoluteEncoderOffsetRadians = Math.toRadians(0);
     public static final boolean kFrontRightAbsoluteEncoderReversed = false;
 
-    public static final int kBackLeftDriveMotorID = 4;
-    public static final int kBackLeftTurnMotorID = 5;
+    public static final int kBackLeftDriveMotorID = 14;
+    public static final int kBackLeftTurnMotorID = 15;
     public static final boolean kBackLeftDriveEncoderReversed = false;
     public static final boolean kBackLeftTurnEncoderReversed = false;
     public static final int kBackLeftAbsoluteEncoderID = 2;
-    public static final double kBackLeftAbsoluteEncoderOffsetRadians = 0;
+    public static final double kBackLeftAbsoluteEncoderOffsetRadians = Math.toRadians(0);
     public static final boolean kBackLeftAbsoluteEncoderReversed = false;
 
-    public static final int kBackRightDriveMotorID = 6;
-    public static final int kBackRightTurnMotorID = 7;
+    public static final int kBackRightDriveMotorID = 16;
+    public static final int kBackRightTurnMotorID = 17;
     public static final boolean kBackRightDriveEncoderReversed = false;
     public static final boolean kBackRightTurnEncoderReversed = false;
     public static final int kBackRightAbsoluteEncoderID = 3;
-    public static final double kBackRightAbsoluteEncoderOffsetRadians = 0;
+    public static final double kBackRightAbsoluteEncoderOffsetRadians = Math.toRadians(0);
     public static final boolean kBackRightAbsoluteEncoderReversed = false;
   }
 }

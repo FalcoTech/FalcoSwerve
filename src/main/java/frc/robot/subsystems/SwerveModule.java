@@ -75,7 +75,7 @@ public class SwerveModule extends SubsystemBase {
     turnEncoder.setPositionConversionFactor(ModuleConstants.kTurnEncoderRot2Radian); // Set turn encoder distance unit to radians instead of rotations/ticks
     turnEncoder.setVelocityConversionFactor(ModuleConstants.kTurnEncoderRPM2RadianPerSec); // Set turn encoder velocity unit to radians per second instead of RPM
 
-    turnPIDController = new PIDController(ModuleConstants.kPTurning, 0.0, 0.0); // Create PID controller for turning
+    turnPIDController = new PIDController(ModuleConstants.kPTurning, ModuleConstants.kITurning, ModuleConstants.kDTurning); // Create PID controller for turning
     turnPIDController.enableContinuousInput(-Math.PI, Math.PI); // Set PID controller to be continuous
 
     resetEncoders(); // Reset encoders on startup
