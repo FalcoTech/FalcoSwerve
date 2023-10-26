@@ -66,7 +66,7 @@ public final class Constants {
     public static final boolean kFrontLeftDriveEncoderReversed = false;
     public static final boolean kFrontLeftTurnEncoderReversed = false;
     public static final int kFrontLeftAbsoluteEncoderID = 0;
-    public static final double kFrontLeftAbsoluteEncoderOffsetRadians = Math.toRadians(0);
+    public static final double kFrontLeftAbsoluteEncoderOffsetRadians = Math.toRadians(0); //enter degrees
     public static final boolean kFrontLeftAbsoluteEncoderReversed = false;
 
     public static final int kFrontRightDriveMotorID = 12;
@@ -74,7 +74,7 @@ public final class Constants {
     public static final boolean kFrontRightDriveEncoderReversed = false;
     public static final boolean kFrontRightTurnEncoderReversed = false;
     public static final int kFrontRightAbsoluteEncoderID = 1;
-    public static final double kFrontRightAbsoluteEncoderOffsetRadians = Math.toRadians(0);
+    public static final double kFrontRightAbsoluteEncoderOffsetRadians = Math.toRadians(0); //enter degrees
     public static final boolean kFrontRightAbsoluteEncoderReversed = false;
 
     public static final int kBackLeftDriveMotorID = 14;
@@ -82,7 +82,7 @@ public final class Constants {
     public static final boolean kBackLeftDriveEncoderReversed = false;
     public static final boolean kBackLeftTurnEncoderReversed = false;
     public static final int kBackLeftAbsoluteEncoderID = 2;
-    public static final double kBackLeftAbsoluteEncoderOffsetRadians = Math.toRadians(0);
+    public static final double kBackLeftAbsoluteEncoderOffsetRadians = Math.toRadians(0); //enter degrees
     public static final boolean kBackLeftAbsoluteEncoderReversed = false;
 
     public static final int kBackRightDriveMotorID = 16;
@@ -90,7 +90,7 @@ public final class Constants {
     public static final boolean kBackRightDriveEncoderReversed = false;
     public static final boolean kBackRightTurnEncoderReversed = false;
     public static final int kBackRightAbsoluteEncoderID = 3;
-    public static final double kBackRightAbsoluteEncoderOffsetRadians = Math.toRadians(0);
+    public static final double kBackRightAbsoluteEncoderOffsetRadians = Math.toRadians(0); //enter degrees
     public static final boolean kBackRightAbsoluteEncoderReversed = false;
   }
 }
