@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
@@ -19,6 +20,9 @@ public class SwerveJoystickCommand extends CommandBase {
   private final Supplier<Double> xSpdFunction, ySpdFunction, rotSpdFunction;
   private final Supplier<Boolean> fieldRelativeFunction;
   private final SlewRateLimiter xLimiter, yLimiter, rotLimiter;
+
+  private final Timer idleTimer = new Timer();
+  private boolean isRobotIdle = (idleTimer.get() > OperatorConstants.kIdleTimeoutSeconds);
 
   /** Creates a new SwerveJoystickCommand. */
   public SwerveJoystickCommand(SwerveSubsystem swerveSubsystem, 
@@ -60,6 +64,7 @@ public class SwerveJoystickCommand extends CommandBase {
     ySpeed = yLimiter.calculate(ySpeed) * (DriveConstants.kMaxSpeedMetersPerSecond); //limit speed to max speed? idk lol
     rotSpeed = rotLimiter.calculate(rotSpeed) * DriveConstants.kMaxAngularSpeedRadiansPerSecond / 2; //same with this
 
+    //apply field relative
     ChassisSpeeds chassisSpeeds; //construct chassis speed
     if (fieldRelativeFunction.get()){ //if field relative mode (default)
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -73,6 +78,10 @@ public class SwerveJoystickCommand extends CommandBase {
 
     //output module states to wheels
     swerveSubsystem.setModuleStates(moduleStates); 
+
+
+
+
     //TODO: If robot is stopped, set modules to brake mode, else set to coast mode
     //TODO: If robot is stopped, set modules to X formation, else use ChassisSpeeds module states
           //Could check if all inputs are under their deadbands, if so, start a timer to see if robot is stopped for a certain amount of time

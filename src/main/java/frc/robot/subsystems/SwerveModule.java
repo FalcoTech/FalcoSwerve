@@ -14,6 +14,7 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -120,6 +121,15 @@ public class SwerveModule extends SubsystemBase {
     driveMotor.set(0);
     turnMotor.set(0);
   }
+  public void coastMotors(){
+    driveMotor.setIdleMode(IdleMode.kCoast);
+    turnMotor.setIdleMode(IdleMode.kCoast);
+  }
+  public void brakeMotors(){
+    driveMotor.setIdleMode(IdleMode.kBrake);
+    turnMotor.setIdleMode(IdleMode.kBrake);
+  }
+
   public void setDesiredState(SwerveModuleState state){ // Set desired state of the module takes a module state object calculated in the command with the given driver parameters (speed, angle)
     if (Math.abs(state.speedMetersPerSecond) < 0.001){ // If speed is less than 0.001 m/s, stop motors, and no need to apply power to motors, so return (stop and get out of the function)
       stopMotors();
@@ -135,6 +145,11 @@ public class SwerveModule extends SubsystemBase {
     
     SmartDashboard.putString("Swerve[" + absoluteEncoder.getDeviceID() + "] state", state.toString()); // print debug info to smartdashboard
   }
+
+  public void setModuleAngle(double degrees){
+    turnMotor.set(turnPIDController.calculate(getTurnPosition(), Math.toRadians(degrees)));
+  }
+  
 
   @Override
   public void periodic() {
