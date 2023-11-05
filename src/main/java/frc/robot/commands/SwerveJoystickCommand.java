@@ -22,7 +22,7 @@ public class SwerveJoystickCommand extends CommandBase {
   private final SlewRateLimiter xLimiter, yLimiter, rotLimiter;
 
   private final Timer idleTimer = new Timer();
-  private boolean isRobotIdle = (idleTimer.get() > OperatorConstants.kIdleTimeoutSeconds);
+  private boolean isRobotIdle = false;
 
   /** Creates a new SwerveJoystickCommand. */
   public SwerveJoystickCommand(SwerveSubsystem swerveSubsystem, 
@@ -53,7 +53,20 @@ public class SwerveJoystickCommand extends CommandBase {
     double xSpeed = xSpdFunction.get(); //get X speed from function
     double ySpeed = ySpdFunction.get(); //get Y speed from function
     double rotSpeed = rotSpdFunction.get(); //get rotation speed from function
-    
+
+    if (Math.abs(xSpeed) < OperatorConstants.kPilotDeadband && Math.abs(ySpeed) < OperatorConstants.kPilotDeadband && Math.abs(rotSpeed) < OperatorConstants.kPilotDeadband){
+      idleTimer.start();
+    } else {
+      idleTimer.stop();
+      idleTimer.reset();
+    }
+    if (idleTimer.get() > OperatorConstants.kIdleTimeoutSeconds){
+      isRobotIdle = true;
+    } else {
+      isRobotIdle = false;
+    }
+
+
     //apply deadband
     xSpeed = Math.abs(xSpeed) > OperatorConstants.kPilotDeadband ? xSpeed : 0.0; // <
     ySpeed = Math.abs(ySpeed) > OperatorConstants.kPilotDeadband ? ySpeed : 0.0; //if requested speed is less than a certain value, set to 0 to prevent drift and ensure the movement was intentional

@@ -119,6 +119,18 @@ public class SwerveSubsystem extends SubsystemBase {
     backLeftModule.stopMotors();
     backRightModule.stopMotors();
   }
+  public void brakeModules(){ //brake all modules
+    frontLeftModule.brakeMotors();
+    frontRightModule.brakeMotors();
+    backLeftModule.brakeMotors();
+    backRightModule.brakeMotors();
+  }
+  public void coastMotors(){
+    frontLeftModule.coastMotors();
+    frontRightModule.coastMotors();
+    backLeftModule.coastMotors();
+    backRightModule.coastMotors();
+  }
 
   public void setModuleStates(SwerveModuleState[] desiredStates){ //set the desired states of each module with a given list of module states (desiredStates)
     SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kMaxSpeedMetersPerSecond); //"Renormalizes the wheel speeds if any individual speed is above the specified maximum."

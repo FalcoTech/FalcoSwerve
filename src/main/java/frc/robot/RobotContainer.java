@@ -42,6 +42,9 @@ public class RobotContainer {
 
   private void configureBindings() {
     new Trigger(() -> Pilot.getOptionsButton()).onTrue(new InstantCommand(() -> m_swerveSubsystem.zeroGyro()));
+    
+    new Trigger(() -> Pilot.getCrossButton()).onTrue(new InstantCommand(() -> m_swerveSubsystem.brakeModules()));
+    new Trigger(() -> Pilot.getCircleButton()).onTrue(new InstantCommand(() -> m_swerveSubsystem.coastMotors()));
   }
 
   public Command getAutonomousCommand() {
