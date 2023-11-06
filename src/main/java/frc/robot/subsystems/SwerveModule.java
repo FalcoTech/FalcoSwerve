@@ -43,7 +43,7 @@ public class SwerveModule extends SubsystemBase {
   private CANCoderConfiguration AEconfig;
 
   private final boolean absoluteEncoderReversed;
-  private static double absoluteEncoderOffsetRadians;
+  private final double absoluteEncoderOffsetRadians;
 
   /** Creates a new SwerveModule. */
   public SwerveModule(int driveMotorID, int turnMotorID, boolean driveMotorReversed, boolean turnMotorReversed, int absoluteEncoderID, double absoluteEncoderOffset, boolean absoluteEncoderReversed) {
