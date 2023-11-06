@@ -81,7 +81,7 @@ public class SwerveJoystickCommand extends CommandBase {
     ChassisSpeeds chassisSpeeds; //construct chassis speed
     if (fieldRelativeFunction.get()){ //if field relative mode (default)
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-            xSpeed, ySpeed, rotSpeed, swerveSubsystem.getGyroRotation2d());
+            xSpeed, ySpeed, rotSpeed, swerveSubsystem.getGyroRotation2d(rotSim));
     } else {
       chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, rotSpeed);
     }

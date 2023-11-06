@@ -43,7 +43,7 @@ public class SwerveModule extends SubsystemBase {
   private CANCoderConfiguration AEconfig;
 
   private final boolean absoluteEncoderReversed;
-  private final double absoluteEncoderOffsetRadians;
+  private static double absoluteEncoderOffsetRadians;
 
   /** Creates a new SwerveModule. */
   public SwerveModule(int driveMotorID, int turnMotorID, boolean driveMotorReversed, boolean turnMotorReversed, int absoluteEncoderID, double absoluteEncoderOffset, boolean absoluteEncoderReversed) {
@@ -100,12 +100,12 @@ public class SwerveModule extends SubsystemBase {
     double angle = absoluteEncoder.getPosition(); // Get absolute encoder angle
     return angle - absoluteEncoderOffsetRadians; // Subtract offset for "actual" angle
   }
-  public Rotation2d getAbsoluteEncoderRotation2d(){
+  public Rotation2d getAbsoluteEncoderRotation2d(){ // Absolute encoder Rotation2d object
     new Rotation2d();
     return Rotation2d.fromRadians(getAbsoluteEncoderRadians());
   }
 
-  public void resetEncoders(){
+  public void resetEncoders(){ //Reset drive encoder and set turn encoder to absolute encoder
     driveEncoder.setPosition(0.0);
     turnEncoder.setPosition(getAbsoluteEncoderRadians());
   }
@@ -145,6 +145,7 @@ public class SwerveModule extends SubsystemBase {
     
     SmartDashboard.putString("Swerve[" + absoluteEncoder.getDeviceID() + "] state", state.toString()); // print debug info to smartdashboard
   }
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
   public void setModuleAngle(double degrees){
     turnMotor.set(turnPIDController.calculate(getTurnPosition(), Math.toRadians(degrees)));
