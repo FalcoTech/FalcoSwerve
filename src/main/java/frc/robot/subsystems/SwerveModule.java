@@ -53,7 +53,7 @@ public class SwerveModule extends SubsystemBase {
     absoluteEncoder = new CANCoder(absoluteEncoderID); // Absolute encoder object
     AEconfig = new CANCoderConfiguration();
 
-    AEconfig.sensorCoefficient = 2 * Math.PI / 4096.0; //coefficent for converting encoder ticks to radians (divide by 4096 for % of full rotation, *2pi to convert to radians)
+    AEconfig.sensorCoefficient = 2 * Math.PI / 4096.0; //value multiplied to get radians (divide by 4096 encoder ticks for % of full rotation, multiple 2pi to convert to radians)
     AEconfig.unitString = "rad"; //set absolute encoder unit to radians
     AEconfig.sensorDirection = absoluteEncoderReversed; //set absolute encoder to be reversed or not
     AEconfig.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180; //set absolute encoder to return values from -180 to 180 degrees
@@ -68,8 +68,8 @@ public class SwerveModule extends SubsystemBase {
     driveMotor.setInverted(driveMotorReversed); // Set drive motor to reversed or not
     turnMotor.setInverted(turnMotorReversed); // Set turn motor to reversed or not
 
-    driveEncoder = driveMotor.getEncoder(); // Drive CANCoder (Relative Encoder)
-    turnEncoder = turnMotor.getEncoder(); // Turn CANCoder (Relative Encoder)
+    driveEncoder = driveMotor.getEncoder(); // Drive Relative Encoder
+    turnEncoder = turnMotor.getEncoder(); // Turn Relative Encoder
 
     driveEncoder.setPositionConversionFactor(ModuleConstants.kDriveEncoderRot2Meter); // Set drive encoder distance unit to meters instead of rotations/ticks
     driveEncoder.setVelocityConversionFactor(ModuleConstants.kDriveEncoderRPM2MeterPerSec); //set drive encoder velocity unit to meters per second instead of RPM
@@ -97,7 +97,7 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public double getAbsoluteEncoderRadians(){
-    double angle = absoluteEncoder.getAbsolutePosition(); // Get absolute encoder angle
+    double angle = absoluteEncoder.getPosition(); // Get absolute encoder angle
     return angle - absoluteEncoderOffsetRadians; // Subtract offset for "actual" angle
   }
   public Rotation2d getAbsoluteEncoderRotation2d(){
