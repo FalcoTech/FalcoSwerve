@@ -37,6 +37,12 @@ public final class Constants {
     //https://upload.wikimedia.org/wikipedia/commons/5/52/Wheelbase_and_Track.png
     //distance between centers of front and back wheels on robot (wheel base)
     public static final double kWheelBase = Units.inchesToMeters(23.5); //change
+    // public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+    //   new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+    //   new Translation2d(kWheelBase / 2, kTrackWidth / 2),
+    //   new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
+    //   new Translation2d(-kWheelBase / 2, kTrackWidth / 2));
+    
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
       new Translation2d(-kTrackWidth / 2, kWheelBase / 2), //Front left from center
       new Translation2d(kTrackWidth / 2, kWheelBase / 2), //Front right from center
