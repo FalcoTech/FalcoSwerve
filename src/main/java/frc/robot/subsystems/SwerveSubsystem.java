@@ -139,4 +139,11 @@ public class SwerveSubsystem extends SubsystemBase {
     backLeftModule.setDesiredState(desiredStates[2]);
     backRightModule.setDesiredState(desiredStates[3]);
   }
+
+  public void setXFormation(){
+    frontLeftModule.setModuleAngle(45);
+    frontRightModule.setModuleAngle(-45);
+    backLeftModule.setModuleAngle(-45);
+    backRightModule.setModuleAngle(45);
+  }
 }

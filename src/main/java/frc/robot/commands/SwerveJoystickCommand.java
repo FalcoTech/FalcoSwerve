@@ -89,10 +89,15 @@ public class SwerveJoystickCommand extends CommandBase {
     //creates a list of swervemodule states to apply to the modules
     SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); //inverse kinematics that we don't have to worry about. Thanks WPIlib!
 
+
+    // if (!isRobotIdle){
+    //   swerveSubsystem.setModuleStates(moduleStates); 
+    // } else {
+    //   swerveSubsystem.setXFormation();
+    // }
+    
     //output module states to wheels
     swerveSubsystem.setModuleStates(moduleStates); 
-
-
 
 
     //TODO: If robot is stopped, set modules to brake mode, else set to coast mode
