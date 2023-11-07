@@ -37,12 +37,7 @@ public final class Constants {
     //https://upload.wikimedia.org/wikipedia/commons/5/52/Wheelbase_and_Track.png
     //distance between centers of front and back wheels on robot (wheel base)
     public static final double kWheelBase = Units.inchesToMeters(23.5); //change
-    // public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-    //   new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-    //   new Translation2d(kWheelBase / 2, kTrackWidth / 2),
-    //   new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
-    //   new Translation2d(-kWheelBase / 2, kTrackWidth / 2));
-    
+
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
       new Translation2d(-kTrackWidth / 2, kWheelBase / 2), //Front left from center
       new Translation2d(kTrackWidth / 2, kWheelBase / 2), //Front right from center
@@ -60,7 +55,7 @@ public final class Constants {
     public static final double kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60.0;
     public static final double kTurnEncoderRPM2RadianPerSec = kTurnEncoderRot2Radian / 60.0;
 
-    public static final double kPTurning = 0.5;
+    public static final double kPTurning = 0.25;
     public static final double kITurning = 0.0;
     public static final double kDTurning = 0.0;
   }

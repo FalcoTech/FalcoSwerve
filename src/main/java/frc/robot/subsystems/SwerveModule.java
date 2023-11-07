@@ -135,13 +135,11 @@ public class SwerveModule extends SubsystemBase {
       stopMotors();
       return;
     }
-
     state = SwerveModuleState.optimize(state, getModuleState().angle); // Optimize the state to get the shortest path to the desired angle
+
     driveMotor.set(state.speedMetersPerSecond / DriveConstants.kMaxSpeedMetersPerSecond); // Set drive motor to the desired speed
-    SmartDashboard.putNumber("Swerve[" + absoluteEncoder.getDeviceID() + "] drive motor output", state.speedMetersPerSecond / DriveConstants.kMaxSpeedMetersPerSecond);
     
     turnMotor.set(turnPIDController.calculate(getTurnPosition(), state.angle.getRadians())); // Set turn motor to the desired angle
-    SmartDashboard.putNumber("Swerve[" + absoluteEncoder.getDeviceID() + "] turn motor output", turnPIDController.calculate(getTurnPosition(), state.angle.getRadians()));
     
     SmartDashboard.putString("Swerve[" + absoluteEncoder.getDeviceID() + "] state", state.toString()); // print debug info to smartdashboard
   }
@@ -155,5 +153,9 @@ public class SwerveModule extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Swerve[" + absoluteEncoder.getDeviceID() + "] AbsEnc Rad", getAbsoluteEncoderRadians()); // print debug info to smartdashboard
+    SmartDashboard.putNumber("Swerve[" + absoluteEncoder.getDeviceID() + "] AbsEnc Deg", Math.toDegrees(getAbsoluteEncoderRadians())); // print debug info to smartdashboard
+
+    
   }
 }
