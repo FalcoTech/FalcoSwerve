@@ -27,6 +27,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveModule extends SubsystemBase {
@@ -138,9 +139,11 @@ public class SwerveModule extends SubsystemBase {
     state = SwerveModuleState.optimize(state, getModuleState().angle); // Optimize the state to get the shortest path to the desired angle
 
     driveMotor.set(state.speedMetersPerSecond / DriveConstants.kMaxSpeedMetersPerSecond); // Set drive motor to the desired speed
-    
+    driveEncoder.setPosition(getDrivePosition() + (state.speedMetersPerSecond / DriveConstants.kMaxSpeedMetersPerSecond / 60 / ModuleConstants.kDriveMotorGearRatio)); // Set drive encoder to the desired speed (for odometry
+
     turnMotor.set(turnPIDController.calculate(getTurnPosition(), state.angle.getRadians())); // Set turn motor to the desired angle
-    
+    absoluteEncoder.setPosition(state.angle.getRadians());
+
     SmartDashboard.putString("Swerve[" + absoluteEncoder.getDeviceID() + "] state", state.toString()); // print debug info to smartdashboard
   }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -155,7 +158,6 @@ public class SwerveModule extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Swerve[" + absoluteEncoder.getDeviceID() + "] AbsEnc Rad", getAbsoluteEncoderRadians()); // print debug info to smartdashboard
     SmartDashboard.putNumber("Swerve[" + absoluteEncoder.getDeviceID() + "] AbsEnc Deg", Math.toDegrees(getAbsoluteEncoderRadians())); // print debug info to smartdashboard
-
     
   }
 }

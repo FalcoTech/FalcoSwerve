@@ -25,14 +25,17 @@ public class RobotContainer {
   private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
 
   private final PS4Controller Pilot = new PS4Controller(0);
-
      
   public RobotContainer() {
+    SmartDashboard.putNumber("Left Y", 0.0);
+    SmartDashboard.putNumber("Left X", 0.0);
+    SmartDashboard.putNumber("Right X", 0.0);
+
     m_swerveSubsystem.setDefaultCommand(new SwerveJoystickCommand(
       m_swerveSubsystem, 
-      () -> -Pilot.getLeftY(),
-      () -> Pilot.getLeftX(),
-      () -> Pilot.getRightX(),
+      () -> SmartDashboard.getNumber("Left Y", 0),
+      () -> -SmartDashboard.getNumber("Left X", 0),
+      () -> -SmartDashboard.getNumber("Right X", 0),
       () -> !Pilot.getR1Button()));
 
     // Configure the trigger bindings
