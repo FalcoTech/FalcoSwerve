@@ -6,9 +6,15 @@ package frc.robot.subsystems;
 
 import org.opencv.core.Mat;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -18,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ModuleConstants;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.Constants.DriveBaseConstants;
 
@@ -66,12 +73,9 @@ public class SwerveSubsystem extends SubsystemBase {
   private final SwerveDriveOdometry odometry = new SwerveDriveOdometry( //initialize odometry for the robot (position and rotation mainly to display on the dashboard)
     DriveConstants.kDriveKinematics, //kinematics of the robot (size and location of the wheels)
     getGyroRotation2d(), //initial rotation in a Rotation2d object 
-    new SwerveModulePosition[]{ //list of each of the modules' encoder positions (wheel distance driven and Rotation2d object of the wheel's angle)
-      frontLeftModule.getModulePosition(),
-      frontRightModule.getModulePosition(),
-      backLeftModule.getModulePosition(),
-      backRightModule.getModulePosition()},
-      new Pose2d(0, 0, getGyroRotation2d())); //initial position of the robot in a Pose2d object (x, y, and rotation)
+    getModulePositionList(),
+    new Pose2d(1.94, 1.06, getGyroRotation2d())
+  ); //initial position of the robot in a Pose2d object (x, y, and rotation)
 
   /** Creates a new SwerveSubsystem. */
   public SwerveSubsystem() {
@@ -85,8 +89,22 @@ public class SwerveSubsystem extends SubsystemBase {
     }).start();
     SmartDashboard.putData("Field", field); //display the field image on the dashboard
     field.setRobotPose(odometry.getPoseMeters()); //set the field image's robot position to the odometry's (initial) robot position
+  
+    AutoBuilder.configureHolonomic(
+      this::getPose2d, 
+      this::resetOdometry, 
+      this::getChassisSpeeds,
+      this::driveRobotRelative,
+      new HolonomicPathFollowerConfig(
+        new PIDConstants(1, 0, 0),
+        new PIDConstants(1, 0, 0),
+        DriveConstants.kMaxSpeedMetersPerSecond,
+        .381, 
+        new ReplanningConfig()), 
+      this);
   }
 
+  
   public void zeroGyro(){ //reset gyro
     gyro.reset();
   }
@@ -97,22 +115,35 @@ public class SwerveSubsystem extends SubsystemBase {
     return Rotation2d.fromDegrees(getGyroAngleDegrees());
   }
 
-  @Override
-  public void periodic() { // This method will be called once per scheduler run (~50 times per second) 
-    SmartDashboard.putNumber("Robot Heading", getGyroAngleDegrees()); //display gyro angle on the dashboard
-    odometry.update( //constantly update odometry with the current module positions and gyro angle
-      getGyroRotation2d(),
-      new SwerveModulePosition[]{
-        frontLeftModule.getModulePosition(),
-        frontRightModule.getModulePosition(),
-        backLeftModule.getModulePosition(),
-        backRightModule.getModulePosition()
-      });
-    field.setRobotPose( //constantly update the robot image on the dashboard field image (x meters, y meters, and rotation2d object)
-      odometry.getPoseMeters().getX(),
-      odometry.getPoseMeters().getY(),
-      getGyroRotation2d());
+  public SwerveModulePosition[] getModulePositionList(){
+    return new SwerveModulePosition[]{
+      frontLeftModule.getModulePosition(),
+      frontRightModule.getModulePosition(),
+      backLeftModule.getModulePosition(),
+      backRightModule.getModulePosition()
+    };
   }
+  public SwerveModuleState[] getModuleStateList(){
+    return new SwerveModuleState[]{
+      frontLeftModule.getModuleState(),
+      frontRightModule.getModuleState(),
+      backLeftModule.getModuleState(),
+      backRightModule.getModuleState()
+    };
+  }
+  public Pose2d getPose2d(){
+    return odometry.getPoseMeters();
+  }
+  public void resetOdometry(Pose2d pose){
+    odometry.resetPosition(
+      getGyroRotation2d(), 
+      getModulePositionList(),
+      pose);
+  }
+  public ChassisSpeeds getChassisSpeeds(){
+    return DriveConstants.kDriveKinematics.toChassisSpeeds(getModuleStateList());
+  }
+
 
   public void stopModules(){ //stop all modules
     frontLeftModule.stopMotors();
@@ -139,6 +170,44 @@ public class SwerveSubsystem extends SubsystemBase {
     frontRightModule.setDesiredState(desiredStates[1]);
     backLeftModule.setDesiredState(desiredStates[2]);
     backRightModule.setDesiredState(desiredStates[3]);
+  }
+
+  public void drive(double xSpeed, double ySpeed, double rotSpeed){
+    double xSpeedOutput = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+    double ySpeedOutput = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+    double rotSpeedOutput = rotSpeed * DriveConstants.kMaxAngularSpeedRadiansPerSecond;
+
+    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
+      new ChassisSpeeds(xSpeedOutput, ySpeedOutput, rotSpeedOutput)
+    );
+
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+      swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond
+    );
+    frontLeftModule.setDesiredState(swerveModuleStates[0]);
+    frontRightModule.setDesiredState(swerveModuleStates[1]);
+    backLeftModule.setDesiredState(swerveModuleStates[2]);
+    backRightModule.setDesiredState(swerveModuleStates[3]);
+  }
+  public void driveRobotRelative(ChassisSpeeds speeds){
+    drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
+  }
+
+  @Override
+  public void periodic() { // This method will be called once per scheduler run (~50 times per second) 
+    SmartDashboard.putNumber("Robot Heading", getGyroAngleDegrees()); //display gyro angle on the dashboard
+    odometry.update( //constantly update odometry with the current module positions and gyro angle
+      getGyroRotation2d(),
+      new SwerveModulePosition[]{
+        frontLeftModule.getModulePosition(),
+        frontRightModule.getModulePosition(),
+        backLeftModule.getModulePosition(),
+        backRightModule.getModulePosition()
+      });
+    field.setRobotPose( //constantly update the robot image on the dashboard field image (x meters, y meters, and rotation2d object)
+      odometry.getPoseMeters().getX(),
+      odometry.getPoseMeters().getY(),
+      getGyroRotation2d());
   }
 
   public void setXFormation(){
