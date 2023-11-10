@@ -1,0 +1,36 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.9145106861642298,
+      "y": 4.437570303712036
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Out Community"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "go far left piece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score low 1"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null
+}

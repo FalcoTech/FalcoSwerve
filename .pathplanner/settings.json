@@ -1,0 +1,9 @@
+{
+  "robotWidth": 0.8,
+  "robotLength": 0.9,
+  "holonomicMode": true,
+  "pathFolders": [
+    "Initial Test"
+  ],
+  "autoFolders": []
+}
