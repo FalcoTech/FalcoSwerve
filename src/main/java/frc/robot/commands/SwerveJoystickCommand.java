@@ -12,6 +12,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -23,6 +24,8 @@ public class SwerveJoystickCommand extends CommandBase {
 
   private final Timer idleTimer = new Timer();
   private boolean isRobotIdle = false;
+
+  public static double simRotation = 0.0;
 
   /** Creates a new SwerveJoystickCommand. */
   public SwerveJoystickCommand(SwerveSubsystem swerveSubsystem, 
@@ -75,7 +78,9 @@ public class SwerveJoystickCommand extends CommandBase {
     //apply limiter
     xSpeed = xLimiter.calculate(xSpeed) * (DriveConstants.kMaxSpeedMetersPerSecond); // sim says 8ft/s is max speed now, so remove / 2 ?
     ySpeed = yLimiter.calculate(ySpeed) * (DriveConstants.kMaxSpeedMetersPerSecond); //limit speed to max speed? idk lol
-    rotSpeed = rotLimiter.calculate(rotSpeed) * DriveConstants.kMaxAngularSpeedRadiansPerSecond / 2; //same with this
+    rotSpeed = rotLimiter.calculate(rotSpeed) * DriveConstants.kMaxAngularSpeedRadiansPerSecond; //same with this
+
+    simRotation += rotSpeed / 60 / ModuleConstants.kDriveMotorGearRatio;
 
     //apply field relative
     ChassisSpeeds chassisSpeeds; //construct chassis speed

@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.Constants.DriveBaseConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -90,7 +91,7 @@ public class SwerveSubsystem extends SubsystemBase {
     gyro.reset();
   }
   public double getGyroAngleDegrees(){ //get gyro angle in degrees
-    return Math.IEEEremainder(gyro.getAngle(), 360);
+    return Math.IEEEremainder(gyro.getAngle() + SwerveJoystickCommand.simRotation, 360);
   }
   public Rotation2d getGyroRotation2d(){ //get gyro angle in a Rotation2d object
     return Rotation2d.fromDegrees(getGyroAngleDegrees());
